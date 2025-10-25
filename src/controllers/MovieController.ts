@@ -152,6 +152,42 @@ class MovieController extends GlobalController<IMovie> {
       res.status(500).json({ message: "Error al importar la película desde Pexels" });
     }
   }
+
+    async searchAndSave(req: Request, res: Response): Promise<void> {
+    try {
+      const query = (req.query.query as string) || "cinema movie";
+      const videos = await searchVideos(query, 10);
+
+      const savedMovies = [];
+      for (const video of videos) {
+        const existing = await MovieDAO.findByField("url", video.url);
+        if (!existing) {
+          const movie = await MovieDAO.create({
+            title: video.user || "Película",
+            genre: "Desconocido",
+            releaseDate: new Date(),
+            image: video.image,
+            url: video.url,
+            videoFiles: video.videoFiles,
+            duration: video.duration,
+            director: video.user,
+            source: "pexels",
+          });
+          savedMovies.push(movie);
+        } else {
+          savedMovies.push(existing);
+        }
+      }
+
+      res.status(200).json(savedMovies);
+    } catch (error) {
+      console.error("Error al buscar/guardar películas:", error);
+      res.status(500).json({ message: "Error al buscar y guardar películas" });
+    }
+  }
 }
+
+
+
 
 export default new MovieController();

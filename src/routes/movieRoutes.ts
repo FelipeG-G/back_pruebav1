@@ -49,6 +49,8 @@ router.get("/search/title",(req: Request, res: Response) => MovieController.sear
 
 
 router.post("/import", (req, res) => MovieController.importMovieFromPexels(req, res));
+router.get("/search", (req: Request, res: Response) => MovieController.searchAndSave(req, res));
+router.put("/:id", (req: Request, res: Response) => MovieController.update(req, res));
 router.get("/pexels/search", async (req: Request, res: Response) => {
   try {
     const { query } = req.query;
@@ -63,4 +65,6 @@ router.get("/pexels/search", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error al obtener videos desde Pexels" });
   }
 });
+
+
 export default router;

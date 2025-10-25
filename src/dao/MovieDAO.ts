@@ -39,6 +39,10 @@ class MovieDAO {
     });
     return await movie.save();
   }
+    async findByField(field: string, value: any): Promise<IMovie | null> {
+    return await Movie.findOne({ [field]: value });
+  }
+
 }
 
 export default new MovieDAO();
